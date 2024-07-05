@@ -6,10 +6,7 @@ import static  com.microsoft.playwright.assertions.PlaywrightAssertions.assertTh
 public class HomePage {
 
     private Page page;
-    private String lmslogo = "//img[@alt='LMS logo']";
-    private String knowledgebank = "//p[text()='Knowledge Bank']";
-    private String trainer = "//img[@alt='Trainer']";
-    private String Add_course = "//img[@alt='Add Course']";
+
     private String baseicon = "//img[@src='/jms/src/assets/GeneralIcons/shortcuts.svg']";
     private String addpubicon="id=add_publisher";
 
@@ -43,6 +40,14 @@ public class HomePage {
 
         return new AddPublisherPage(page);
     }
+
+    public AddPublisherManualPage navigatetoaddpublishermanualpage() {
+
+        page.url();
+
+        return new AddPublisherManualPage(page);
+    }
+
 
 
 

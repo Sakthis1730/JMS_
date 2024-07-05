@@ -4,6 +4,7 @@ import com.microsoft.playwright.Page;
 import org.lms.listeners.*;
 import org.lms.pagefactory.PageFactory;
 import org.lms.pages.AddArticlePage;
+import org.lms.pages.AddPublisherManualPage;
 import org.lms.pages.AddPublisherPage;
 import org.lms.pages.HomePage;
 import org.testng.annotations.*;
@@ -22,6 +23,8 @@ public class BaseTest {
 
    protected AddArticlePage addarticlepage;
 
+   protected AddPublisherManualPage addPublishermanualPage;
+
 
    @BeforeClass
    public void startbrwoser() throws IOException {
@@ -38,14 +41,14 @@ public class BaseTest {
 
 
 
-    @AfterClass
+   /* @AfterClass
    public void teardown()
    {
 
     //   page.context().tracing().stopChunk(new Tracing.StopChunkOptions().setPath(Paths.get("trace.zip")));
 
-       page.context().browser().close();
-   }
+      // page.context().browser().close();
+   }*/
 
 
 

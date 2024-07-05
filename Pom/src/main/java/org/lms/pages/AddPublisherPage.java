@@ -1,14 +1,18 @@
 package org.lms.pages;
 
-import com.aventstack.extentreports.util.Assert;
 import com.microsoft.playwright.FileChooser;
-import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import utils.ExcelUtils;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import java.nio.file.Paths;
+import java.util.List;
+
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+
+
 
 public class AddPublisherPage {
 
@@ -29,7 +33,7 @@ public class AddPublisherPage {
     private String ftpusername="//input[@data-testid='ftp-user-name']";
     private String ftppassword="//input[@data-testid='ftp-password']";
     private String ftp_initial_directory="//input[@data-testid='ftp-initial-directory']";
-    private String daysforlatexnormalization="//h2[text()='General']//following::input[@data-testid='days-for-latex-normalization'][1]";
+    private String daysforlatexnormalization="(//h2[text()='General']//following::input[@data-testid='days-for-latex-normalization'])[1]";
     private String daysforgraphics="(//h3[text()='TAT for First Proof']//following::input[@data-testid='number-of-days-for-graphics'])[1]";
     private String daysforPreediting="(//h3[text()='TAT for First Proof']//following::input[@data-testid='number-of-days-for-pre-editing'])[1]";
     private String daysforcopyediting="(//h3[text()='TAT for First Proof']//following::input[@data-testid='number-of-days-for-copyediting'])[1]";
@@ -79,7 +83,28 @@ public class AddPublisherPage {
     private String f_priweb_pag="//h2[text()='Fasttrack']//following::h3[text()=' TAT for Print/Web ']//following::input[@data-testid='number-of-days-for-pagination'][1]";
     private String f_printweb_qc="//h2[text()='Fasttrack']//following::h3[text()=' TAT for Print/Web ']//following::input[@data-testid='number-of-days-for-qc']";
     private String f_printweb_xml="//h2[text()='Fasttrack']//following::h3[text()=' TAT for Print/Web ']//following::input[@data-testid='number-of-days-for-xml']";
-    private String addjournalicon="id=add_article";
+    private String addjournalicon="id=add_journal";
+    private String verifyerrormsgforpub="//*[text()='JMS - Add Publisher']//following::div[2]";
+    private String updtaealerttext="//*[text()='JMS - Add Publisher']//following::span[1]";
+    private String addalertclose="//h2[text()='JMS - Add Publisher']//following::span[1]";
+    private String updatealertclose="//h2[text()='JMS - Update Publisher']//following::span[1]";
+    private String verifypubforlog="//th[text()='k']";
+    private String viewtype="";
+    private String pubviewtype="";
+    private String updatebutton="//button[text()='Update']";
+    private String updatealert="//h2[text()='JMS - Update Publisher']//following::span[1]";
+    private String reuploadbutton="//*[text()='Reupload']";
+    private String journal_pub_drop="id=publisher";
+    private String journal_pub_list="//*[@id='publisher']//following::li";
+    public String  f_latex_val;
+    public String f_graph_val;
+    public  String f_pre_val;
+    public String f_copy_edit_val;
+    public String f_ts_val;
+    public String f_qc_val;
+    public String style_error_text="//h2[text()='JMS - File Upload Restriction']//following::div[2]";
+    public String getStyle_error_alert="//h2[text()='JMS - File Upload Restriction']//following::span[1]";
+
 
 
     public AddPublisherPage(Page page)
@@ -94,14 +119,13 @@ public class AddPublisherPage {
 
     }
 
-    public String addpublisher(String a,String b,String c,String d,String e,String f,String g,String h,String i,String j,String k,String l,String m,String n,String o,String p,String q,String r,String s,String t,String u,String v,String w,String x,String y,String z,String aa)  {
 
+    public String addpublisher(String acro,String pub,String c,String d,String e,String f,String g,String h,String i,String j,String k,String l,String m,String n,String o,String p,String q,String r,String s,String t,String u,String v,String w,String x,String y,String z,String aa)
+    {
 
-
-
-
-         page.locator(pub_acronym).fill(a);
-         page.locator(pub_name_textbox).fill(b);
+        page.locator(pub_acronym).fill(acro);
+         page.locator(pub_name_textbox).fill(pub);
+       // Assert.assertEquals(page.locator(pub_acronym).inputValue(), a, "pub_acronym not filled correctly");
          page.locator(pub_mail_textbox).fill(c);
          page.locator(desc_inputbox).fill(d);
         LocalDate currentDate = LocalDate.now();
@@ -114,7 +138,7 @@ public class AddPublisherPage {
 
 
          page.locator(ftp_initial_directory).fill(h);
-         page.locator(daysforlatexnormalization).fill(i);
+         page.locator(daysforlatexnormalization).fill("1");
          page.locator(daysforgraphics).fill(j);
          page.locator(daysforPreediting).fill(k);
          page.locator(daysforcopyediting).fill(l);
@@ -145,11 +169,18 @@ public class AddPublisherPage {
         fileChooser.setFiles(Paths.get("guidelines.docx"));
 
         page.locator(CopyTat).click();
+
+
         page.locator(CopyTatConfirm).click();
 
+
+
+
         page.locator(addbutton).click();
+        page.locator(addalertclose).click();
         page.locator(managemenu).click();
-       String val= page.locator("//th[text()='"+a+"']").textContent();
+
+       String val= page.locator("//th[text()='"+acro+"']").textContent();
        return  val;
 
 
@@ -205,8 +236,8 @@ public class AddPublisherPage {
         page.locator(f_o_pag).fill(ll);
         page.locator(f_o_qc).fill(mm);
         page.locator(f_o_xml).fill(nn);
-        page.locator(IssuePag).fill(oo);
-        page.locator(IssueQC).fill(pp);
+        page.locator(f_iss_pag).fill(oo);
+        page.locator(f_iss_qc).fill(pp);
         page.locator(f_priweb_pag).fill(qq);
         page.locator(f_printweb_qc).fill(rr);
         page.locator(f_printweb_xml).fill(ss);
@@ -223,6 +254,7 @@ public class AddPublisherPage {
         fileChooser = page.waitForFileChooser(() -> page.locator(guidelinesdoc).click());
         fileChooser.setFiles(Paths.get("guidelines.docx"));
         page.locator(addbutton).click();
+        page.locator(addalertclose).click();
         page.locator(managemenu).click();
         String val= page.locator("//th[text()='"+a+"']").textContent();
         return  val;
@@ -230,7 +262,7 @@ public class AddPublisherPage {
 
     }
 
-  /*  public String getacrronym()
+    public String getacrronym()
     {
         page.locator(pub_acronym).fill("1");
         return page.locator(pub_acronym).textContent();
@@ -241,9 +273,9 @@ public class AddPublisherPage {
     {
         page.locator(CopyTat).click();
         page.locator(CopyTatConfirm).click();
-    }*/
+    }
 
-    public String verify_Tat_values(String a,String b,String c,String d,String e,String f,String g,String h,String i,String j,String k,String l,String m,String n,String o,String p,String q,String r,String s,String t,String u,String v,String w,String x,String y,String z,String aa)
+    public void verify_Tat_values(String a,String b,String c,String d,String e,String f,String g,String h,String i,String j,String k,String l,String m,String n,String o,String p,String q,String r,String s,String t,String u,String v,String w,String x,String y,String z,String aa)
     {
         page.locator(pub_acronym).fill(a);
         page.locator(pub_name_textbox).fill(b);
@@ -263,7 +295,6 @@ public class AddPublisherPage {
         page.locator(daysforgraphics).fill(j);
         page.locator(daysforPreediting).fill(k);
         page.locator(daysforcopyediting).fill(l);
-        page.locator(daysforlatexnormalization).fill(m);
         page.locator(daysfortypesettings).fill(n);
         page.locator(daysforqc).fill(o);
         page.locator(daysforaupag).fill(p);
@@ -280,16 +311,378 @@ public class AddPublisherPage {
         //assertThat(page.locator(printxml)).isAttached();
         page.locator(printxml).fill(aa);
         page.locator(CopyTat).click();
+
         page.locator(CopyTatConfirm).click();
-        assertThat(page.locator(daysforlatexnormalization)).isEditable();
-        return page.locator(daysforlatexnormalization).inputValue();
+        f_latex_val= page.locator(f_LatexNormal).inputValue();
+        f_graph_val=page.locator(f_graphics).inputValue();
+        f_pre_val= page.locator(f_preedit).inputValue();
+        f_copy_edit_val= page.locator(f_copyedit).inputValue();
+        f_ts_val= page.locator(f_ts).inputValue();
+        f_qc_val= page.locator(f_qc).inputValue();
+
 
     }
 
-    public void VerifyPublisherNotDuplicate()
+
+    public String verifyaddpub(String a,String b,String c,String d,String e,String f,String g,String h,String i,String j,String k,String l,String m,String n,String o,String p,String q,String r,String s,String t,String u,String v,String w,String x,String y,String z,String aa)
     {
-        
+        page.locator(pub_acronym).fill(a);
+        page.locator(pub_name_textbox).fill(b);
+        page.locator(pub_mail_textbox).fill(c);
+        page.locator(desc_inputbox).fill(d);
+        LocalDate currentDate = LocalDate.now();
+        String formattedDate = currentDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
+        page.locator(selectdateinput).fill(formattedDate);
+        page.locator(selectdateinput).fill(formattedDate);
+        page.locator(pub_location).fill(e);
+        page.locator(ftpusername).fill(f);
+        page.locator(ftppassword).fill(g);
+
+
+        page.locator(ftp_initial_directory).fill(h);
+        page.locator(daysforlatexnormalization).fill(i);
+        page.locator(daysforgraphics).fill(j);
+        page.locator(daysforPreediting).fill(k);
+        page.locator(daysforcopyediting).fill(l);
+        page.locator(daysfortypesettings).fill(n);
+        page.locator(daysforqc).fill(o);
+        page.locator(daysforaupag).fill(p);
+        page.locator(daysforauqc).fill(q);
+        page.locator(daysforpepag).fill(r);
+        page.locator(daysforpeqc).fill(s);
+        page.locator(daysforonlinepag).fill(t);
+        page.locator(daysforonlineqc).fill(u);
+        page.locator(daysforonlinexml).fill(v);
+        page.locator(IssuePag).fill(w);
+        page.locator(IssueQC).fill(x);
+        page.locator(printpag).fill(y);
+        page.locator(printQC).fill(z);
+        //assertThat(page.locator(printxml)).isAttached();
+        page.locator(printxml).fill(aa);
+        page.locator(CopyTat).click();
+
+        page.locator(CopyTatConfirm).click();
+        f_latex_val= page.locator(f_LatexNormal).inputValue();
+        f_graph_val=page.locator(f_graphics).inputValue();
+        f_pre_val= page.locator(f_preedit).inputValue();
+        f_copy_edit_val= page.locator(f_copyedit).inputValue();
+        f_ts_val= page.locator(f_ts).inputValue();
+        f_qc_val= page.locator(f_qc).inputValue();
+        page.locator(addbutton).click();
+        page.locator(addalertclose).click();
+        page.locator(managemenu).click();
+        page.locator("//th[text()='"+a+"']//following::span[@data-target='#dropright'][1]").click();
+        page.locator("//th[text()='"+a+"']//following::div[@id='dropright']/div[text()='Edit Publisher']").click();
+        //String text=page.locator("//*[@id='real_input']//following::span[text()='"+c+"']").textContent();
+
+        return  f_latex_val;
     }
+
+
+    public String VerifyPublisherNotDuplicate(String a,String b)
+    {
+
+
+        page.locator(pub_acronym).fill(a);
+        page.locator(pub_name_textbox).fill(b);
+        page.locator(pub_mail_textbox).fill("sak@gmail.com");
+        page.locator(desc_inputbox).fill("1");
+        LocalDate currentDate = LocalDate.now();
+        String formattedDate = currentDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
+        page.locator(selectdateinput).fill(formattedDate);
+        page.locator(selectdateinput).fill(formattedDate);
+        page.locator(pub_location).fill("1");
+        page.locator(ftpusername).fill("1");
+        page.locator(ftppassword).fill("1");
+
+
+        page.locator(ftp_initial_directory).fill("1");
+        page.locator(daysforlatexnormalization).fill("1");
+        page.locator(daysforgraphics).fill("1");
+        page.locator(daysforPreediting).fill("1");
+        page.locator(daysforcopyediting).fill("1");
+        page.locator(daysforlatexnormalization).fill("1");
+        page.locator(daysfortypesettings).fill("1");
+        page.locator(daysforqc).fill("1");
+        page.locator(daysforaupag).fill("1");
+        page.locator(daysforauqc).fill("1");
+        page.locator(daysforpepag).fill("1");
+        page.locator(daysforpeqc).fill("1");
+        page.locator(daysforonlinepag).fill("1");
+        page.locator(daysforonlineqc).fill("1");
+        page.locator(daysforonlinexml).fill("1");
+        page.locator(IssuePag).fill("1");
+        page.locator(IssueQC).fill("1");
+        page.locator(printpag).fill("1");
+        page.locator(printQC).fill("1");
+        //assertThat(page.locator(printxml)).isAttached();
+        page.locator(printxml).fill("1");
+
+        page.locator(CopyTat).click();
+        page.locator(CopyTatConfirm).click();
+
+
+
+
+
+
+        page.locator(addbutton).click();
+        String text=page.locator(verifyerrormsgforpub).textContent();
+        page.locator(addalertclose).click();
+        return text;
+    }
+
+    public String addpublisherwithlogo(String a,String b,String c)
+    {
+        page.locator(pub_acronym).fill(a);
+        page.locator(pub_name_textbox).fill(b);
+        page.locator(pub_mail_textbox).fill("sak@gmail.com");
+        page.locator(desc_inputbox).fill("1");
+        LocalDate currentDate = LocalDate.now();
+        String formattedDate = currentDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
+        page.locator(selectdateinput).fill(formattedDate);
+        page.locator(selectdateinput).fill(formattedDate);
+        page.locator(pub_location).fill("1");
+        page.locator(ftpusername).fill("1");
+        page.locator(ftppassword).fill("1");
+
+
+        page.locator(ftp_initial_directory).fill("1");
+        page.locator(daysforlatexnormalization).fill("1");
+        page.locator(daysforgraphics).fill("1");
+        page.locator(daysforPreediting).fill("1");
+        page.locator(daysforcopyediting).fill("1");
+        page.locator(daysforlatexnormalization).fill("1");
+        page.locator(daysfortypesettings).fill("1");
+        page.locator(daysforqc).fill("1");
+        page.locator(daysforaupag).fill("1");
+        page.locator(daysforauqc).fill("1");
+        page.locator(daysforpepag).fill("1");
+        page.locator(daysforpeqc).fill("1");
+        page.locator(daysforonlinepag).fill("1");
+        page.locator(daysforonlineqc).fill("1");
+        page.locator(daysforonlinexml).fill("1");
+        page.locator(IssuePag).fill("1");
+        page.locator(IssueQC).fill("1");
+        page.locator(printpag).fill("1");
+        page.locator(printQC).fill("1");
+        //assertThat(page.locator(printxml)).isAttached();
+        page.locator(printxml).fill("1");
+
+        page.locator(CopyTat).click();
+        page.locator(CopyTatConfirm).click();
+
+        fileChooser = page.waitForFileChooser(() -> page.locator(Imageuploadbutton).click());
+        fileChooser.setFiles(Paths.get(c));
+
+
+
+
+
+
+
+        page.locator(addbutton).click();
+        page.locator(addalertclose).click();
+        page.locator(managemenu).click();
+        page.locator("//th[text()='"+a+"']//following::span[@data-target='#dropright'][1]").click();
+        page.locator("//th[text()='"+a+"']//following::div[@id='dropright']/div[text()='Edit Publisher']").click();
+        String text=page.locator("//*[@id='real_input']//following::span[text()='"+c+"']").textContent();
+        return text;
+
+
+
+    }
+
+public void addpub(String a)
+{
+    page.locator(pub_acronym).fill(a);
+    page.locator(pub_name_textbox).fill("b");
+    page.locator(pub_mail_textbox).fill("sak@gmail.com");
+    page.locator(desc_inputbox).fill("1");
+    LocalDate today = LocalDate.now();
+    LocalDate tomarrow=today.plusDays(1);
+
+    String formattedDate = today.format(DateTimeFormatter.ISO_LOCAL_DATE);
+    String tomorrow = (today.plusDays(1)).format(DateTimeFormatter.ISO_DATE);
+
+
+    page.locator(selectdateinput).fill(tomorrow);
+
+    page.locator(pub_location).fill("1");
+    page.locator(ftpusername).fill("1");
+    page.locator(ftppassword).fill("1");
+
+
+    page.locator(ftp_initial_directory).fill("1");
+    page.locator(daysforlatexnormalization).fill("1");
+    page.locator(daysforgraphics).fill("1");
+    page.locator(daysforPreediting).fill("1");
+    page.locator(daysforcopyediting).fill("1");
+    page.locator(daysforlatexnormalization).fill("1");
+    page.locator(daysfortypesettings).fill("1");
+    page.locator(daysforqc).fill("1");
+    page.locator(daysforaupag).fill("1");
+    page.locator(daysforauqc).fill("1");
+    page.locator(daysforpepag).fill("1");
+    page.locator(daysforpeqc).fill("1");
+    page.locator(daysforonlinepag).fill("1");
+    page.locator(daysforonlineqc).fill("1");
+    page.locator(daysforonlinexml).fill("1");
+    page.locator(IssuePag).fill("1");
+    page.locator(IssueQC).fill("1");
+    page.locator(printpag).fill("1");
+    page.locator(printQC).fill("1");
+    //assertThat(page.locator(printxml)).isAttached();
+    page.locator(printxml).fill("1");
+
+    page.locator(CopyTat).click();
+    page.locator(CopyTatConfirm).click();
+
+    fileChooser = page.waitForFileChooser(() -> page.locator(Imageuploadbutton).click());
+    fileChooser.setFiles(Paths.get("Automation.jpg"));
+    page.locator(addbutton).click();
+    page.locator(addalertclose).click();
+
+
+}
+
+    public String addpublisher(String a)
+    {
+
+            page.locator(pub_acronym).fill(a);
+            page.locator(pub_name_textbox).fill("logotest");
+            page.locator(pub_mail_textbox).fill("sak@gmail.com");
+            page.locator(desc_inputbox).fill("1");
+            LocalDate today = LocalDate.now();
+            LocalDate tomarrow=today.plusDays(1);
+
+            String formattedDate = today.format(DateTimeFormatter.ISO_LOCAL_DATE);
+            String tomorrow = (today.plusDays(1)).format(DateTimeFormatter.ISO_DATE);
+
+
+            page.locator(selectdateinput).fill(tomorrow);
+
+        page.locator(pub_location).fill("1");
+            page.locator(ftpusername).fill("1");
+            page.locator(ftppassword).fill("1");
+
+
+            page.locator(ftp_initial_directory).fill("1");
+            page.locator(daysforlatexnormalization).fill("1");
+            page.locator(daysforgraphics).fill("1");
+            page.locator(daysforPreediting).fill("1");
+            page.locator(daysforcopyediting).fill("1");
+            page.locator(daysforlatexnormalization).fill("1");
+            page.locator(daysfortypesettings).fill("1");
+            page.locator(daysforqc).fill("1");
+            page.locator(daysforaupag).fill("1");
+            page.locator(daysforauqc).fill("1");
+            page.locator(daysforpepag).fill("1");
+            page.locator(daysforpeqc).fill("1");
+            page.locator(daysforonlinepag).fill("1");
+            page.locator(daysforonlineqc).fill("1");
+            page.locator(daysforonlinexml).fill("1");
+            page.locator(IssuePag).fill("1");
+            page.locator(IssueQC).fill("1");
+            page.locator(printpag).fill("1");
+            page.locator(printQC).fill("1");
+            //assertThat(page.locator(printxml)).isAttached();
+            page.locator(printxml).fill("1");
+
+            page.locator(CopyTat).click();
+            page.locator(CopyTatConfirm).click();
+
+            fileChooser = page.waitForFileChooser(() -> page.locator(Imageuploadbutton).click());
+            fileChooser.setFiles(Paths.get("Automation.jpg"));
+            page.locator(addbutton).click();
+            page.locator(addalertclose).click();
+            page.locator(managemenu).click();
+            page.locator("//th[text()='"+a+"']//following::span[@data-target='#dropright'][1]").click();
+            page.locator("//th[text()='"+a+"']//following::div[@id='dropright']/div[text()='Edit Publisher']").click();
+
+        //String tomorrow = (today.plusDays(1)).format(DateTimeFormatter.ISO_DATE);
+
+        page.locator(selectdateinput).fill(tomorrow);
+        page.locator(updatebutton).click();
+
+        assertThat(page.locator(updatealert)).isVisible();
+        String updatealerttext= page.locator(updtaealerttext).textContent();
+        page.locator(updatealert).click();
+        page.locator("//th[text()='"+a+"']//following::span[@data-target='#dropright'][1]").click();
+        page.locator("//th[text()='"+a+"']//following::div[@id='dropright']/div[text()='Edit Publisher']").click();
+
+        String date=page.locator(selectdateinput).inputValue();
+
+        return date;
+    }
+
+    public String verifylog(String a,String b)
+    {
+        page.locator(managemenu).click();
+        page.locator("//th[text()='"+a+"']//following::span[@data-target='#dropright']").click();
+        page.locator("//th[text()='"+a+"']//following::div[@id='dropright']/div[text()='Edit Publisher']").click();
+        fileChooser = page.waitForFileChooser(() -> page.locator(reuploadbutton).click());
+        fileChooser.setFiles(Paths.get(b));
+        page.locator(updatebutton).click();
+       // assertThat(page.locator(updatealert)).isVisible();
+
+        page.locator(updatealert).click();
+        page.locator("//th[text()='"+a+"']//following::span[@data-target='#dropright'][1]").click();
+        page.locator("//th[text()='"+a+"']//following::div[@id='dropright']/div[text()='Edit Publisher']").click();
+        String imagename=page.locator("//span[text()='Reupload']//following::span[text()='"+b+"']").textContent();
+        return imagename;
+
+
+    }
+
+    public List<String> pubavailinjournal(String a)
+    {
+        page.locator(managemenu).click();
+        page.locator(baseicon).click();
+        page.locator(addjournalicon).click();
+        page.locator(journal_pub_drop).click();
+        List<String> publist =page.locator(journal_pub_list).allInnerTexts();
+        return publist;
+
+    }
+    public String checkrecentfiles()
+    {
+        fileChooser = page.waitForFileChooser(() -> page.locator(guidelinesdoc).click());
+        fileChooser.setFiles(Paths.get("guidelines.docx"));
+       String text= page.locator("//*[text()='guidelines.docx']//preceding::h2[1]").textContent();
+       return text;
+
+    }
+
+    public void verifystyformat(String a)
+    {
+        fileChooser = page.waitForFileChooser(() -> page.locator(styletemplate).click());
+        fileChooser.setFiles(Paths.get(a));
+        String text=page.locator(style_error_text).textContent();
+        page.locator(getStyle_error_alert).click();
+    }
+
+
+    public void verifyfuidelinesdocuploadverification()
+    {
+        fileChooser = page.waitForFileChooser(() -> page.locator(styletemplate).click());
+        fileChooser.setFiles(Paths.get(a));
+        String text=page.locator(style_error_text).textContent();
+        page.locator(getStyle_error_alert).click();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
