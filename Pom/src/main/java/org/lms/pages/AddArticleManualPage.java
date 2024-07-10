@@ -7,24 +7,24 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class AddArticlePage {
+public class AddArticleManualPage {
 
     private Page page;
     FileChooser fileChooser;
 
     private  String baseicon="//img[@src='/jms/src/assets/GeneralIcons/shortcuts.svg']";
     private String addarticleicon="id=add_article";
-   /* private String uploadform="//*[@alt='Option 1 (Upload)']";
+    /* private String uploadform="//*[@alt='Option 1 (Upload)']";
 
-    private String selectprioritydropdown="id=priority";
-    private String selectpriority="//*[@id='priority']//following::p[text()='High']";
-    private String selecttat="//label[text()='TAT']//following::div[1]";
-    private String selecttatinput="//label[text()='TAT']//following::li[1]//following::p[1]";
-    private String Doino="id=doi";
-    private String  selectworkflowdropdown="id=workFlow";
-    private String selectworkflow="//*[@id='workFlow']//following::p[text()='Fresh']";
-    private String noofpages="//input[@id='numberOfPages']";
-    private String cebypass="id=CE by-pass";*/
+     private String selectprioritydropdown="id=priority";
+     private String selectpriority="//*[@id='priority']//following::p[text()='High']";
+     private String selecttat="//label[text()='TAT']//following::div[1]";
+     private String selecttatinput="//label[text()='TAT']//following::li[1]//following::p[1]";
+     private String Doino="id=doi";
+     private String  selectworkflowdropdown="id=workFlow";
+     private String selectworkflow="//*[@id='workFlow']//following::p[text()='Fresh']";
+     private String noofpages="//input[@id='numberOfPages']";
+     private String cebypass="id=CE by-pass";*/
     private String form="//img[@alt='Option 2 (Form)']";
     private String Selectpubdropdown="id=publisher";
     private  String selectpublisher="//p[normalize-space(text())='GGD(EMS Press)']\n";
@@ -45,7 +45,7 @@ public class AddArticlePage {
     private String assignbutton="//*[text()='Assign']";
 
 
-   // private String selectworkflowopt="//*[@id='workFlow']//following::p[text()='Fresh']";
+    // private String selectworkflowopt="//*[@id='workFlow']//following::p[text()='Fresh']";
     private String noofpages="//input[@id='numberOfPages']";
     private String cebypass="id=CE by-pass";
     private String articletype="//*[@placeholder='Enter Article Type...']";
@@ -87,7 +87,7 @@ public class AddArticlePage {
 
 
 
-    public AddArticlePage(Page page)
+    public AddArticleManualPage(Page page)
     {
         this.page=page;
     }
@@ -105,8 +105,7 @@ public class AddArticlePage {
         page.reload();
     }
 
-    public void DoAddArticle() throws InterruptedException {
-
+    public void DoAddArticle(String articleid,String name,String doinum) throws InterruptedException {
         LocalDate today = LocalDate.now();
         LocalDate tomarrow = today.plusDays(1);
         LocalDate DayOftomarrow = today.plusDays(2);
@@ -119,10 +118,10 @@ public class AddArticlePage {
         page.locator(form).click();
         page.locator(Selectpubdropdown).click();
         page.locator(selectpublisher).click();
-        page.locator(articleidinput).fill("1900000");
+        page.locator(articleidinput).fill(articleid);
         page.locator(authormail).fill("abc@gmail.com");
         page.locator(authorname).fill("Mahindra");
-        page.locator(articlename).fill("Thor");
+        page.locator(articlename).fill(name);
         page.locator(selectpriority).click();
         page.locator(selectpriorityopt).click();
         page.locator(receivedate).fill(formattedDate);
@@ -130,7 +129,7 @@ public class AddArticlePage {
         page.locator(Accepteddate).fill(dayoftomorrow);
         page.locator(selecttat).click();
         page.locator(selecttatinput).click();
-        page.locator(Doino).fill("2020202");
+        page.locator(Doino).fill(doinum);
         page.locator(workflowselection).click();
         page.locator(selectgeneralworkflow).click();
         page.locator(assignbutton).click();
@@ -143,7 +142,7 @@ public class AddArticlePage {
         page.locator(ChecklistSelectionShow).click();
         page.locator(startdate).fill(formattedDate);
         page.locator(OnOpenAccess).click();
-        fileChooser=page.waitForFileChooser(()->page.locator(fileupload).click());
+        fileChooser = page.waitForFileChooser(() -> page.locator(fileupload).click());
         fileChooser.setFiles(Paths.get("GGD-805.zip"));
         page.locator(addnotes).click();
 
@@ -167,50 +166,10 @@ public class AddArticlePage {
         page.locator(savenotificationmail).click();
         page.locator(notificationalert).click();
         page.locator(notificationsuccesstoastmail).click();
-       // page.locator(addarticlebutton).click();
-
-
-
-
-
-
-
-
-
-
+        // page.locator(addarticlebutton).click();
+        Thread.sleep(100000);
 
     }
-
-
-
-      /*  public void AddArticleWithUpload()
-        {
-
-            page.locator(baseicon).click();
-            page.locator(addarticleicon).click();
-            fileChooser = page.waitForFileChooser(() -> page.locator(uploadform).click());
-
-            fileChooser.setFiles(Paths.get("GGD-805.zip"));
-            page.locator(articleidinput).fill("222222222");
-
-            page.locator(selectprioritydropdown).click();
-            page.locator(selectpriority).click();
-
-            page.locator(selecttat).click();
-            page.locator(selecttatinput).click();
-
-            page.locator(selectworkflowdropdown).click();
-            page.locator(selectworkflow).click();
-
-            page.locator(noofpages).fill("200");
-
-            page.locator(Doino).fill("23456789");
-
-            page.locator(cebypass).click();
-        }*/
-
-
-
 
 
 

@@ -48,15 +48,24 @@ public class HomePage {
         return new AddPublisherManualPage(page);
     }
 
+    public AddArticleManualPage navigatetoaddarticlemanualpage() {
+
+        page.url();
+
+        return new AddArticleManualPage(page);
+    }
 
 
 
 
-   /* public AddArticlePage navigatetoaddarticlepage() {
+
+
+
+    public AddArticlePage navigatetoaddarticlepage() {
 
         page.url();
 
         return new AddArticlePage(page);
     }
-*/
+
 }
